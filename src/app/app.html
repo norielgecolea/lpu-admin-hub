@@ -85,7 +85,7 @@
 
               <div class="space-y-0.5">
                 <p class="text-sm font-semibold text-black md:text-base">{{ link.name }}</p>
-                @if (link.name === 'Internet' && isInternetDisabled()) {
+                @if (link.name === 'Internet') {
                   <p class="text-[10px] font-medium text-slate-500">
                     {{ internetReachable() === null ? 'Checking…' : 'LPU network only' }}
                   </p>

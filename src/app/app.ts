@@ -6,6 +6,10 @@ type HubLink = {
   description: string;
 };
 
+type LocalNetworkRequestInit = RequestInit & {
+  targetAddressSpace?: 'local' | 'loopback' | 'private' | 'public';
+};
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.html',
@@ -31,9 +35,7 @@ export class App implements OnInit {
       return;
     }
 
-    void this.isReachable(internet.url).then((reachable) => {
-      this.internetReachable.set(reachable);
-    });
+    void this.checkInternetReachability(internet.url);
   }
 
   protected isInternetDisabled(): boolean {
@@ -46,58 +48,54 @@ export class App implements OnInit {
     }
   }
 
+  private async checkInternetReachability(url: string): Promise<void> {
+    // GitHub Pages is HTTPS; browsers block plain HTTP probes unless we declare
+    // Local Network Access (private IP 10.1.1.1). Non-Chromium browsers often
+    // cannot probe at all — leave the link enabled there instead of stuck off.
+    if (this.isHttpsPage() && !this.canUseLocalNetworkFetch()) {
+      this.internetReachable.set(true);
+      return;
+    }
+
+    const reachable = await this.isReachable(url);
+    this.internetReachable.set(reachable);
+  }
+
+  private isHttpsPage(): boolean {
+    return globalThis.location?.protocol === 'https:';
+  }
+
+  /** Chromium implements fetch `targetAddressSpace` for local HTTP from HTTPS pages. */
+  private canUseLocalNetworkFetch(): boolean {
+    const chrome = (globalThis as { chrome?: unknown }).chrome;
+    return typeof chrome === 'object' && chrome !== null;
+  }
+
   /**
-   * Probes the captive portal. Uses fetch when possible; falls back to an image
-   * request so HTTPS pages can still detect the HTTP portal (passive mixed content).
+   * Probes the captive portal from GitHub Pages via Local Network Access.
+   * `targetAddressSpace: 'local'` skips mixed-content blocking for private hosts.
    */
-  private isReachable(url: string, timeoutMs = 3500): Promise<boolean> {
+  private async isReachable(url: string, timeoutMs = 4000): Promise<boolean> {
     const probe = `${url}${url.includes('?') ? '&' : '?'}_=${Date.now()}`;
+    const init: LocalNetworkRequestInit = {
+      mode: 'no-cors',
+      cache: 'no-store',
+      signal: AbortSignal.timeout(timeoutMs),
+      targetAddressSpace: 'local'
+    };
 
-    return new Promise((resolve) => {
-      let settled = false;
-      const finish = (value: boolean) => {
-        if (settled) {
-          return;
-        }
-        settled = true;
-        clearTimeout(timer);
-        resolve(value);
-      };
-
-      const timer = setTimeout(() => finish(false), timeoutMs);
-
-      fetch(probe, {
-        mode: 'no-cors',
-        cache: 'no-store',
-        signal: AbortSignal.timeout(timeoutMs)
-      })
-        .then(() => finish(true))
-        .catch(() => {
-          const img = new Image();
-          img.onload = () => finish(true);
-          img.onerror = () => {
-            // Captive portals usually return HTML (decode fails → onerror).
-            // Resource timing tells us whether the host actually responded.
-            requestAnimationFrame(() => {
-              const entries = performance.getEntriesByName(probe) as PerformanceResourceTiming[];
-              const entry = entries.at(-1);
-              if (!entry) {
-                finish(false);
-                return;
-              }
-
-              const status = (entry as PerformanceResourceTiming & { responseStatus?: number })
-                .responseStatus;
-              const responded =
-                entry.encodedBodySize > 0 ||
-                entry.transferSize > 0 ||
-                (typeof status === 'number' && status > 0) ||
-                entry.duration > 100;
-              finish(responded);
-            });
-          };
-          img.src = probe;
-        });
-    });
+    try {
+      await fetch(probe, init);
+      return true;
+    } catch {
+      // Retry without the annotation for HTTP-hosted deployments / older browsers.
+      try {
+        const { targetAddressSpace: _ignored, ...fallback } = init;
+        await fetch(probe, fallback);
+        return true;
+      } catch {
+        return false;
+      }
+    }
   }
 }
