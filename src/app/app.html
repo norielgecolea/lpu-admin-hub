@@ -20,7 +20,7 @@
           LYCEUM OF THE PHILIPPINES UNIVERSITY LAGUNA
         </p>
         <h1 class="text-3xl font-bold text-black md:text-5xl">
-          Admin Hub
+          Admin Portal
         </h1>
         <p class="mx-auto max-w-2xl text-sm text-black md:text-base">
           Access your essential administrative services.
@@ -28,13 +28,13 @@
       </header>
 
       <aside class="rounded-3xl border border-slate-200 bg-white/80 p-5 shadow-xl md:p-8">
-        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 lg:gap-4">
+        <div class="flex flex-wrap justify-center gap-3 lg:gap-4">
           @for (link of links; track link.name) {
             <a
               [href]="link.url"
               target="_blank"
               rel="noopener noreferrer"
-              class="group flex min-h-36 flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-center transition duration-200 hover:-translate-y-1 hover:border-red-500 hover:bg-red-50 hover:shadow-lg hover:shadow-red-400/60"
+              class="group flex min-h-36 w-[calc((100%-0.75rem)/2)] flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-center transition duration-200 hover:-translate-y-1 hover:border-red-500 hover:bg-red-50 hover:shadow-lg hover:shadow-red-400/60 sm:w-[calc((100%-1.5rem)/3)] lg:w-[calc((100%-3rem)/4)]"
             >
               <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-black/5 transition group-hover:scale-105">
                 @switch (link.name) {
