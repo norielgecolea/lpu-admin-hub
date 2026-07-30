@@ -20,7 +20,7 @@ export class App implements OnInit {
   protected readonly internetReachable = signal<boolean | null>(null);
 
   protected readonly links: HubLink[] = [
-    { name: 'MIS Helpdesk', url: 'https://helpdesk.lpulaguna.com', description: 'Support and concerns' },
+    { name: 'MIS Helpdesk', url: 'https://lpul-mis.on.spiceworks.com/portal/registrations', description: 'Support and concerns' },
     { name: 'LMS', url: 'https://lms.lpulaguna.edu.ph', description: 'Learning Management System' },
     { name: 'Office 365', url: 'https://office.com', description: 'Email and productivity tools' },
     { name: 'ERP', url: 'https://erp.lpulaguna.edu.ph', description: 'Enterprise resource planning' },
