@@ -31,10 +31,17 @@
         <div class="flex flex-wrap justify-center gap-3 lg:gap-4">
           @for (link of links; track link.name) {
             <a
-              [href]="link.url"
+              [attr.href]="link.name === 'Internet' && isInternetDisabled() ? null : link.url"
               target="_blank"
               rel="noopener noreferrer"
+              [attr.aria-disabled]="link.name === 'Internet' && isInternetDisabled()"
+              [title]="link.name === 'Internet' && internetReachable() === false ? 'Only available on the LPU network' : link.description"
+              (click)="onLinkClick($event, link)"
               class="group flex min-h-36 w-[calc((100%-0.75rem)/2)] flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-white p-4 text-center transition duration-200 hover:-translate-y-1 hover:border-red-500 hover:bg-red-50 hover:shadow-lg hover:shadow-red-400/60 sm:w-[calc((100%-1.5rem)/3)] lg:w-[calc((100%-3rem)/4)]"
+              [class.pointer-events-none]="link.name === 'Internet' && isInternetDisabled()"
+              [class.cursor-not-allowed]="link.name === 'Internet' && isInternetDisabled()"
+              [class.opacity-40]="link.name === 'Internet' && isInternetDisabled()"
+              [class.grayscale]="link.name === 'Internet' && isInternetDisabled()"
             >
               <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-black/5 transition group-hover:scale-105">
                 @switch (link.name) {
@@ -76,7 +83,14 @@
                 }
               </div>
 
-              <p class="text-sm font-semibold text-black md:text-base">{{ link.name }}</p>
+              <div class="space-y-0.5">
+                <p class="text-sm font-semibold text-black md:text-base">{{ link.name }}</p>
+                @if (link.name === 'Internet' && isInternetDisabled()) {
+                  <p class="text-[10px] font-medium text-slate-500">
+                    {{ internetReachable() === null ? 'Checking…' : 'LPU network only' }}
+                  </p>
+                }
+              </div>
 
             </a>
           }
