@@ -51,6 +51,6 @@ Point your domain/subdomain to GitHub Pages:
 | LMS | https://lms.lpulaguna.edu.ph |
 | Office 365 | https://office.com |
 | ERP | https://erp.lpulaguna.edu.ph |
-| Dorado | https://dorado.grantthorntonsolutions.ph/1.0.0.17871/Account/Login |
-| Reservation | https://reservation.lpulaguna.com |
-| Internet | http://web.lpu-laguna.edu.ph:8090 |
+| Dorado (Payslips) | https://dorado.grantthorntonsolutions.ph/1.0.0.17871/Account/Login |
+| Reservation System | https://reservation.lpulaguna.com |
+| Internet Access | http://web.lpu-laguna.edu.ph:8090 |

@@ -24,13 +24,13 @@ export class App implements OnInit {
     { name: 'LMS', url: 'https://lms.lpulaguna.edu.ph', description: 'Learning Management System' },
     { name: 'Office 365', url: 'https://office.com', description: 'Email and productivity tools' },
     { name: 'ERP', url: 'https://erp.lpulaguna.edu.ph', description: 'Enterprise resource planning' },
-    { name: 'Dorado', url: 'https://dorado.grantthorntonsolutions.ph/1.0.0.17871/Account/Login', description: 'Grant Thornton Dorado' },
-    { name: 'Reservation', url: 'https://reservation.lpulaguna.com', description: 'Book rooms and facilities' },
-    { name: 'Internet', url: 'http://web.lpu-laguna.edu.ph:8090', description: 'LPU Captive Portal' }
+    { name: 'Dorado (Payslips)', url: 'https://dorado.grantthorntonsolutions.ph/1.0.0.17871/Account/Login', description: 'Grant Thornton Dorado' },
+    { name: 'Reservation System', url: 'https://reservation.lpulaguna.com', description: 'Book rooms and facilities' },
+    { name: 'Internet Access', url: 'http://web.lpu-laguna.edu.ph:8090', description: 'LPU Captive Portal' }
   ];
 
   ngOnInit(): void {
-    const internet = this.links.find((link) => link.name === 'Internet');
+    const internet = this.links.find((link) => link.name === 'Internet Access');
     if (!internet) {
       return;
     }
@@ -43,7 +43,7 @@ export class App implements OnInit {
   }
 
   protected onLinkClick(event: Event, link: HubLink): void {
-    if (link.name === 'Internet' && this.isInternetDisabled()) {
+    if (link.name === 'Internet Access' && this.isInternetDisabled()) {
       event.preventDefault();
     }
   }
